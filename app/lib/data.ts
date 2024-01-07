@@ -1,4 +1,8 @@
 import { sql } from '@vercel/postgres';
+import { v4 as uuidv4 } from 'uuid'
+import bcrypt from 'bcrypt';
+
+
 import {
   CustomerField,
   CustomersTableType,
@@ -226,5 +230,35 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+const saltRounds = 10;
+
+export async function hashPassword(password: string): Promise<string> {
+  // Generate a salt and hash on separate function calls
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+}
+
+export async function addUser(name: string, email: string, password: string) {
+  noStore();
+  try {
+    const hashedPassword = await hashPassword(password)
+    const id = uuidv4(); // Generates a unique UUID
+
+    const result = await sql`
+      INSERT INTO users (id, name, email, password)
+      VALUES (${id}, ${name}, ${email}, ${hashedPassword})
+      RETURNING id;
+    `;
+    return {
+      userId: result.rows[0].id,
+      message: 'User added successfully',
+    };
+  } catch (error) {
+    console.error('Failed to add user:', error);
+    throw new Error('Failed to add user.');
   }
 }

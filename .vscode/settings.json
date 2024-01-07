@@ -3,6 +3,8 @@
     "clsx",
     "heroicons",
     "Lusitana",
-    "sidenav"
+    "sidenav",
+    "signup",
+    "uuidv"
   ]
 }

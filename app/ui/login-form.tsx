@@ -10,6 +10,7 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '@/app/lib/actions';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
@@ -62,6 +63,11 @@ export default function LoginForm() {
           </div>
         </div>
         <LoginButton />
+        <div className="mt-4 flex justify-center">
+          <Link href="sign-up" className="text-blue-400 hover:text-blue-600">
+            Don&apos;t have an account?
+          </Link>
+        </div>
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
